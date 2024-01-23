@@ -10,16 +10,6 @@
 </head>
 
 <body>
-    <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Kanban</title>
-        <script src="./js/vue.js"></script>
-        <link rel="stylesheet" href="./css/main.css">
-    </head>
 
     <body>
         <div id="app">
@@ -48,7 +38,62 @@
                         <button type="submit">Создать карточку</button>
                     </form>
                 </div>
-                <script src="./VUE.JS/main.js"></script>
+
+                <div class="column">
+                    <h2>Задачи в работе</h2>
+                    <div class="cards">
+                        <div v-for="card in inProgressTasks" :key="card.id" class="card">
+                            <div class="card-header">
+                                <span class="timestamp">{{ card.lastEdited }}</span>
+                                <button @click="editCard(card)">Редактировать</button>
+                                <button @click="deleteCard(card)">Удалить</button>
+                            </div>
+                            <div class="card-content">
+                                <h3>{{ card.title }}</h3>
+                                <p>{{ card.description }}</p>
+                                <p>Дэдлайн: {{ card.deadline }}</p>
+                            </div>
+                            <button @click="moveToTesting(card)">Переместить в тестирование</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h2>Тестирование</h2>
+                    <div class="cards">
+                        <div v-for="card in testingTasks" :key="card.id" class="card">
+                            <div class="card-header">
+                                <span class="timestamp">{{ card.lastEdited }}</span>
+                                <button @click="editCard(card)">Редактировать</button>
+                                <button @click="deleteCard(card)">Удалить</button>
+                            </div>
+                            <div class="card-content">
+                                <h3>{{ card.title }}</h3>
+                                <p>{{ card.description }}</p>
+                                <p>Дэдлайн: {{ card.deadline }}</p>
+                            </div>
+                            <button @click="moveToCompleted(card)">Переместить в выполненные</button>
+                            <p v-if="card.returnReason">Причина возврата: {{ card.returnReason }}</p>
+                            <button v-if="!card.returnReason" @click="returnToProgress(card)">Вернуть в работу</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h2>Выполненные задачи</h2>
+                    <div class="cards">
+                        <div v-for="card in completedTasks" :key="card.id" class="card">
+                            <div class="card-content">
+                                <h3 :class="{ 'expired': isDeadlineExpired(card.deadline) }">{{ card.title }}</h3>
+                                <p>{{ card.description }}</p>
+                                <p>Дэдлайн: {{ card.deadline }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="./VUE.JS/main.js"></script>
     </body>
 
-    </html>
+</html>
