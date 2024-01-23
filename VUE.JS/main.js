@@ -102,5 +102,48 @@ new Vue({
                 this.inProgressTasks.push(card);
             }
         },
-    },
+        isDeadlineExpired: function(deadline) {
+            const currentDate = new Date();
+            const deadlineDate = new Date(deadline);
+
+            return currentDate > deadlineDate;
+        },
+        clearForm: function() {
+            this.newCardTitle = '';
+            this.newCardDescription = '';
+            this.newCardDeadline = '';
+        },
+        findColumn: function(card) {
+            if (this.plannedTasks.includes(card)) {
+                return this.plannedTasks;
+            } else if (this.inProgressTasks.includes(card)) {
+                return this.inProgressTasks;
+            } else if (this.testingTasks.includes(card)) {
+                return this.testingTasks;
+            } else if (this.completedTasks.includes(card)) {
+                return this.completedTasks;
+            } else {
+                return null;
+            }
+        },
+        saveTasksToStorage() {
+            const tasks = {
+                plannedTasks: this.plannedTasks,
+                inProgressTasks: this.inProgressTasks,
+                testingTasks: this.testingTasks,
+                completedTasks: this.completedTasks,
+            };
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        },
+        loadTasksFromStorage() {
+            const tasks = localStorage.getItem('tasks');
+            if (tasks) {
+                const parsedTasks = JSON.parse(tasks);
+                this.plannedTasks = parsedTasks.plannedTasks || [];
+                this.inProgressTasks = parsedTasks.inProgressTasks || [];
+                this.testingTasks = parsedTasks.testingTasks || [];
+                this.completedTasks = parsedTasks.completedTasks || [];
+            }
+        },
+    }
 });
