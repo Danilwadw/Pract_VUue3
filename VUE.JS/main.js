@@ -52,12 +52,13 @@ new Vue({
             this.plannedTasks.push(newCard);
             this.clearForm();
         },
-        checkYear: function() {
+        validateDate() {
             const yearInput = document.querySelector('input[type="date"]');
-            const enteredYear = yearInput.value.slice(0, 4);
+            const enteredDate = yearInput.value;
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
-            if (enteredYear.length !== 4) {
-                console.log('Ошибка! Год должен состоять из четырех цифр.');
+            if (!dateRegex.test(enteredDate)) {
+                console.log('Ошибка! Неправильный формат даты.');
             }
         },
         editCard: function(card) {

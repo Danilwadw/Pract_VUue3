@@ -73,8 +73,8 @@ input[type="date"] {
 }
 
 .expired {
-    font-weight: bold;
-    color: red;
+    font-size: 1.6rem;
+    color: rgb(255, 255, 255);
 }
 
 form {
