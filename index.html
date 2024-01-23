@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./VUE.JS/vue.js"></script>
+    <link rel="stylesheet" href="./CSS/style.css">
+    <title>Kanban доска</title>
+</head>
+
+<body>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Kanban</title>
+        <script src="./js/vue.js"></script>
+        <link rel="stylesheet" href="./css/main.css">
+    </head>
+
+    <body>
+        <div id="app">
+            <div class="board">
+                <div class="column">
+                    <h2>Запланированные задачи</h2>
+                    <div class="cards">
+                        <div v-for="card in plannedTasks" :key="card.id" class="card">
+                            <div class="card-header">
+                                <span class="timestamp">{{ card.lastEdited }}</span>
+                                <button @click="editCard(card)">Редактировать</button>
+                                <button @click="deleteCard(card)">Удалить</button>
+                            </div>
+                            <div class="card-content">
+                                <h3>{{ card.title }}</h3>
+                                <p>{{ card.description }}</p>
+                                <p>Дэдлайн: {{ card.deadline }}</p>
+                            </div>
+                            <button @click="moveToInProgress(card)">Переместить в работу</button>
+                        </div>
+                    </div>
+                    <form @submit.prevent="addCard">
+                        <input v-model="newCardTitle" placeholder="Заголовок" required>
+                        <input v-model="newCardDescription" placeholder="Описание" required>
+                        <input type="date" v-model="newCardDeadline" @change="checkYear" required>
+                        <button type="submit">Создать карточку</button>
+                    </form>
+                </div>
+                <script src="./VUE.JS/main.js"></script>
+    </body>
+
+    </html>
