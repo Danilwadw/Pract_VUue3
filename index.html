@@ -31,7 +31,7 @@
                             <button @click="moveToInProgress(card)">Переместить в работу</button>
                         </div>
                     </div>
-                    <form @submit.prevent="addCard">
+                    <form @submit.prevent="addCard" class="form_style">
                         <input v-model="newCardTitle" placeholder="Заголовок" required>
                         <input v-model="newCardDescription" placeholder="Описание" required>
                         <input type="date" v-model="newCardDeadline" @change="checkYear" required>
