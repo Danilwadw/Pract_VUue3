@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(95, 95, 69);
+    background-color: rgb(113, 113, 113);
 }
 
 .board {
@@ -18,7 +18,8 @@ body {
 }
 
 .card {
-    background-color: #a0cf77;
+    background-color: #d2d861;
+    border: solid 2px rgb(255, 255, 255);
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 8px;
@@ -45,7 +46,11 @@ h2 {
     border-radius: 10px;
     text-align: center;
     padding: 5px;
-    background-color: rgb(157, 125, 125);
+    background-color: rgb(255, 255, 255);
+}
+
+h3 {
+    font-size: 1.6rem;
 }
 
 button {
@@ -57,6 +62,18 @@ button {
     color: white;
     border-radius: 4px;
     margin-bottom: 10px
+}
+
+button:hover {
+    background-color: #51cf56;
+}
+
+.del {
+    background-color: rgb(169, 28, 28);
+}
+
+.del:hover {
+    background-color: crimson;
 }
 
 input,
@@ -74,13 +91,13 @@ input[type="date"] {
 
 .expired {
     font-size: 1.6rem;
-    color: rgb(255, 255, 255);
+    color: rgb(175, 0, 0);
 }
 
 form {
     margin-bottom: 20px;
-    border: solid 1px black;
+    border: solid 2px rgb(255, 255, 255);
     padding: 30px;
     border-radius: 8px;
-    background-color: #a0cf77;
+    background-color: #d2d861;
 }
