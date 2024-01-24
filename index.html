@@ -26,7 +26,7 @@
                             <div class="card-content">
                                 <h3>{{ card.title }}</h3>
                                 <p>{{ card.description }}</p>
-                                <p>Дэдлайн: {{ card.deadline }}</p>
+                                <p>Deadline: {{ card.deadline }}</p>
                             </div>
                             <button @click="moveToInProgress(card)">Переместить в работу</button>
                         </div>
@@ -46,12 +46,12 @@
                             <div class="card-header">
                                 <span class="timestamp">{{ card.lastEdited }}</span>
                                 <button @click="editCard(card)">Редактировать</button>
-                                <button @click="deleteCard(card)">Удалить</button>
+                                <button class="del" @click="deleteCard(card)">Удалить</button>
                             </div>
                             <div class="card-content">
                                 <h3>{{ card.title }}</h3>
                                 <p>{{ card.description }}</p>
-                                <p>Дэдлайн: {{ card.deadline }}</p>
+                                <p>Deadline: {{ card.deadline }}</p>
                             </div>
                             <button @click="moveToTesting(card)">Переместить в тестирование</button>
                         </div>
@@ -65,12 +65,12 @@
                             <div class="card-header">
                                 <span class="timestamp">{{ card.lastEdited }}</span>
                                 <button @click="editCard(card)">Редактировать</button>
-                                <button @click="deleteCard(card)">Удалить</button>
+                                <button class="del" @click="deleteCard(card)">Удалить</button>
                             </div>
                             <div class="card-content">
                                 <h3>{{ card.title }}</h3>
                                 <p>{{ card.description }}</p>
-                                <p>Дэдлайн: {{ card.deadline }}</p>
+                                <p>Deadline: {{ card.deadline }}</p>
                             </div>
                             <button @click="moveToCompleted(card)">Переместить в выполненные</button>
                             <p v-if="card.returnReason">Причина возврата: {{ card.returnReason }}</p>
@@ -86,7 +86,7 @@
                             <div class="card-content" :class="{ 'completed': card.completed, 'expired': isDeadlineExpired(card.deadline) }">
                                 <h3>{{ card.title }}</h3>
                                 <p>{{ card.description }}</p>
-                                <p>Дэдлайн: {{ card.deadline }}</p>
+                                <p>Deadline: {{ card.deadline }}</p>
                             </div>
                         </div>
                     </div>

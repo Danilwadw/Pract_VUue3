@@ -1,61 +1,48 @@
 new Vue({
-    el: '#app', // Привязка Vue-компонента к элементу с идентификатором 'app'
-    data: {
-        plannedTasks: [], // Массив для хранения запланированных задач
-        inProgressTasks: [], // Массив для хранения задач в процессе выполнения
-        testingTasks: [], // Массив для хранения задач на тестировании
-        completedTasks: [], // Массив для хранения выполненных задач
-        newCardTitle: '', // Переменная для хранения заголовка новой карточки
-        newCardDescription: '', // Переменная для хранения описания новой карточки
-        newCardDeadline: '', // Переменная для хранения дедлайна новой карточки
+    el: '#app', // Привязка Vue к элементу с id "app" в HTML
+
+    data() {
+        return {
+            plannedTasks: [], // Массив задач, запланированных для выполнения
+            inProgressTasks: [], // Массив задач, находящихся в процессе выполнения
+            testingTasks: [], // Массив задач, находящихся в стадии тестирования
+            completedTasks: [], // Массив выполненных задач
+            newCardTitle: '', // Заголовок новой задачи
+            newCardDescription: '', // Описание новой задачи
+            newCardDeadline: '' // Дата завершения новой задачи
+        };
     },
+
     mounted() {
-        this.loadTasksFromStorage(); // Загрузка задач из локального хранилища при инициализации Vue-компонента
+        this.loadTasksFromStorage(); // Загрузка сохраненных задач из локального хранилища при запуске приложения
     },
+
     watch: {
-        // Обработчики изменений в массивах задач
-        plannedTasks: {
-            handler() {
-                this.saveTasksToStorage(); // Сохранение задач в локальное хранилище при изменении plannedTasks
-            },
-            deep: true, // Глубокое наблюдение за вложенными свойствами массива
-        },
-        inProgressTasks: {
-            handler() {
-                this.saveTasksToStorage(); // Сохранение задач в локальное хранилище при изменении inProgressTasks
-            },
-            deep: true, // Глубокое наблюдение за вложенными свойствами массива
-        },
-        testingTasks: {
-            handler() {
-                this.saveTasksToStorage(); // Сохранение задач в локальное хранилище при изменении testingTasks
-            },
-            deep: true, // Глубокое наблюдение за вложенными свойствами массива
-        },
-        completedTasks: {
-            handler() {
-                this.saveTasksToStorage(); // Сохранение задач в локальное хранилище при изменении completedTasks
-            },
-            deep: true, // Глубокое наблюдение за вложенными свойствами массива
-        },
+        plannedTasks: { handler: 'saveTasksToStorage', deep: true }, // Наблюдение за изменениями в массиве plannedTasks и сохранение задач в локальное хранилище
+        inProgressTasks: { handler: 'saveTasksToStorage', deep: true }, // Наблюдение за изменениями в массиве inProgressTasks и сохранение задач в локальное хранилище
+        testingTasks: { handler: 'saveTasksToStorage', deep: true }, // Наблюдение за изменениями в массиве testingTasks и сохранение задач в локальное хранилище
+        completedTasks: { handler: 'saveTasksToStorage', deep: true } // Наблюдение за изменениями в массиве completedTasks и сохранение задач в локальное хранилище
     },
+
     methods: {
-        addCard: function() {
-            // Метод для добавления новой карточки задачи
+        addCard() {
+            // Добавление новой задачи
             const newCard = {
-                id: Date.now(), // ID новой карточки, генерируемый на основе текущего времени
-                title: this.newCardTitle, // Заголовок новой карточки
-                description: this.newCardDescription, // Описание новой карточки
-                deadline: this.newCardDeadline, // Дедлайн новой карточки
-                lastEdited: new Date().toLocaleString(), // Дата последнего редактирования новой карточки
-                returnReason: '' // Причина возврата задачи в процесс выполнения
+                id: Date.now(),
+                title: this.newCardTitle,
+                description: this.newCardDescription,
+                deadline: this.newCardDeadline,
+                favorite: false,
+                lastEdited: new Date().toLocaleString(),
+                returnReason: ''
             };
 
-            this.plannedTasks.push(newCard); // Добавление новой карточки в массив запланированных задач
-            this.clearForm(); // Очистка полей ввода для новой карточки
+            this.plannedTasks.push(newCard); // Добавление новой задачи в массив plannedTasks
+            this.clearForm(); // Очистка полей формы добавления задачи
         },
+
         validateDate() {
-            // Метод для валидации формата даты
+            // Проверка правильности формата введенной даты
             const yearInput = document.querySelector('input[type="date"]');
             const enteredDate = yearInput.value;
             const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -64,94 +51,112 @@ new Vue({
                 console.log('Ошибка! Неправильный формат даты.');
             }
         },
-        editCard: function(card) {
-            // Метод для редактирования существующей карточки
+
+        editCard(card) {
+            // Редактирование задачи
             const newTitle = prompt('Введите новый заголовок', card.title);
             const newDescription = prompt('Введите новое описание', card.description);
 
             if (newTitle && newDescription) {
                 card.title = newTitle;
                 card.description = newDescription;
-                card.lastEdited = new Date().toLocaleString(); // Обновление даты последнего редактирования карточки
+                card.lastEdited = new Date().toLocaleString();
             }
         },
-        deleteCard: function(card) {
-            // Метод для удаления карточки
-            const column = this.findColumn(card); // Определение столбца, в котором находится карточка
+
+        deleteCard(card) {
+            const column = this.findColumn(card); // Определение колонки, в которой находится задача
 
             if (column) {
-                column.splice(column.indexOf(card), 1); // Удаление карточки из соответствующего столбца
+                column.splice(column.indexOf(card), 1); // Удаление задачи из найденной колонки
             }
         },
-        moveToInProgress: function(card) {
-            // Метод для перемещения карточки в столбец "Задачи в процессе выполнения"
-            this.plannedTasks.splice(this.plannedTasks.indexOf(card), 1); // Удаление карточки из массива запланированных задач
-            card.lastEdited = new Date().toLocaleString(); // Обновление даты последнего редактирования карточки
-            this.inProgressTasks.push(card); // Добавление карточки в массив задач в процессе выполнения
+
+        moveToInProgress(card) {
+            // Перемещение задачи в стадию "В процессе выполнения"
+            this.plannedTasks.splice(this.plannedTasks.indexOf(card), 1); // Удаление задачи из массива plannedTasks
+            card.lastEdited = new Date().toLocaleString();
+            this.inProgressTasks.push(card); // Добавление задачи в массив inProgressTasks
         },
-        moveToTesting: function(card) {
-            // Метод для перемещения карточки в столбец "Задачи на тестировании"
-            this.inProgressTasks.splice(this.inProgressTasks.indexOf(card), 1); // Удаление карточки из массива задач в процессе выполнения
-            card.lastEdited = new Date().toLocaleString(); // Обновление даты последнего редактирования карточки
-            this.testingTasks.push(card); // Добавление карточки в массив задач на тестировании
+
+        moveToTesting(card) {
+            // Перемещение задачи в стадию "Тестирование"
+            this.inProgressTasks.splice(this.inProgressTasks.indexOf(card), 1); // Удаление задачи из массива inProgressTasks
+            card.lastEdited = new Date().toLocaleString();
+            this.testingTasks.push(card); // Добавление задачи в массив testingTasks
         },
-        moveToCompleted: function(card) {
-            // Метод для перемещения карточки в столбец "Выполненные задачи"
-            this.testingTasks.splice(this.testingTasks.indexOf(card), 1); // Удаление карточки из массива задач на тестировании
-            card.lastEdited = new Date().toLocaleString(); // Обновление даты последнего редактирования карточки
-            this.completedTasks.push(card); // Добавление карточки в массив выполненных задач
+
+        moveToCompleted(card) {
+            // Перемещение задачи в стадию "Завершено"
+            this.testingTasks.splice(this.testingTasks.indexOf(card), 1); // Удаление задачи из массива testingTasks
+            card.lastEdited = new Date().toLocaleString();
+
+            if (this.isDeadlineExpired(card.deadline)) {
+                card.title += " просрочена"; // Если дата завершения просрочена, добавить соответствующую метку к заголовку задачи
+            } else {
+                card.title += " выполненная в срок"; // Если дата завершения не просрочена, добавить соответствующую метку к заголовку задачи
+            }
+
+            this.completedTasks.push(card); // Добавление задачи в массив completedTasks
         },
-        returnToProgress: function(card) {
-            // Метод для возврата карточки в столбец "Задачи в процессе выполнения" из столбца "Задачи на тестировании"
+
+        returnToProgress(card) {
+            // Возврат задачи из стадии "Тестирование" в стадию "В процессе выполнения"
             const reason = prompt('Введите причину возврата', '');
 
             if (reason) {
-                this.testingTasks.splice(this.testingTasks.indexOf(card), 1); // Удаление карточки из массива задач на тестировании
-                card.lastEdited = new Date().toLocaleString(); // Обновление даты последнего редактирования карточки
-                card.returnReason = reason; // Запись причины возврата карточки
-                this.inProgressTasks.push(card); // Добавление карточки в массив задач в процессе выполнения
+                this.testingTasks.splice(this.testingTasks.indexOf(card), 1); // Удаление задачи из массива testingTasks
+                card.lastEdited = new Date().toLocaleString();
+                card.returnReason = reason;
+                this.inProgressTasks.push(card); // Добавление задачи в массив inProgressTasks
             }
         },
-        isDeadlineExpired: function(deadline) {
-            // Метод для проверки просрочен ли дедлайн задачи
+
+        isDeadlineExpired(deadline) {
+            // Проверка, просрочена ли дата завершения задачи
             const currentDate = new Date();
             const deadlineDate = new Date(deadline);
 
-            return currentDate > deadlineDate; // Возвращает булевое значение - просрочен ли дедлайн
+            return currentDate > deadlineDate;
         },
-        clearForm: function() {
-            // Метод для очистки полей ввода формы для новой карточки
+
+        clearForm() {
+            // Очистка полей формы добавления задачи
             this.newCardTitle = '';
             this.newCardDescription = '';
             this.newCardDeadline = '';
         },
-        findColumn: function(card) {
-            // Метод для определения в каком столбце находится карточка
+
+        findColumn(card) {
+            // Определение в какой колонке находится задача (поиск и возвращение ссылки на массив, содержащий задачу)
             if (this.plannedTasks.includes(card)) {
-                return this.plannedTasks; // Карточка находится в массиве запланированных задач
+                return this.plannedTasks;
             } else if (this.inProgressTasks.includes(card)) {
-                return this.inProgressTasks; // Карточка находится в массиве задач в процессе выполнения
+                return this.inProgressTasks;
             } else if (this.testingTasks.includes(card)) {
-                return this.testingTasks; // Карточка находится в массиве задач на тестировании
+                return this.testingTasks;
             } else if (this.completedTasks.includes(card)) {
-                return this.completedTasks; // Карточка находится в массиве выполненных задач
+                return this.completedTasks;
             } else {
-                return null; // Карточка не находится ни в одном из массивов
+                return null;
             }
         },
+
         saveTasksToStorage() {
-            // Метод для сохранения задач в локальное хранилище
+            // Сохранение задач в локальное хранилище
             const tasks = {
                 plannedTasks: this.plannedTasks,
                 inProgressTasks: this.inProgressTasks,
                 testingTasks: this.testingTasks,
-                completedTasks: this.completedTasks,
+                completedTasks: this.completedTasks
             };
             localStorage.setItem('tasks', JSON.stringify(tasks));
         },
+
         loadTasksFromStorage() {
-            // Метод для загрузки задач из локального хранилища
+            // Загрузка задач из локального хранилища
             const tasks = localStorage.getItem('tasks');
+
             if (tasks) {
                 const parsedTasks = JSON.parse(tasks);
                 this.plannedTasks = parsedTasks.plannedTasks || [];
@@ -159,6 +164,6 @@ new Vue({
                 this.testingTasks = parsedTasks.testingTasks || [];
                 this.completedTasks = parsedTasks.completedTasks || [];
             }
-        },
-    }
+        }
+    },
 });
