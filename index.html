@@ -51,6 +51,7 @@
                                 <h3>{{ card.title }}</h3>
                                 <p>{{ card.description }}</p>
                                 <p>Deadline: {{ card.deadline }}</p>
+                                <p v-if="card.returnReason">Причина возврата: {{ card.returnReason }}</p>
                             </div>
                             <button @click="moveToTesting(card)">Переместить в тестирование</button>
                         </div>
@@ -69,9 +70,9 @@
                                 <h3>{{ card.title }}</h3>
                                 <p>{{ card.description }}</p>
                                 <p>Deadline: {{ card.deadline }}</p>
+                                <p v-if="card.returnReason">Причина возврата: {{ card.returnReason }}</p>
                             </div>
                             <button @click="moveToCompleted(card)">Переместить в выполненные</button>
-                            <p v-if="card.returnReason">Причина возврата: {{ card.returnReason }}</p>
                             <button v-if="!card.returnReason" @click="returnToProgress(card)">Вернуть в работу</button>
                         </div>
                     </div>
